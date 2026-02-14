@@ -2,6 +2,8 @@
 
 A free web app that generates balanced Catan maps with fair initial placement suggestions. No backend needed — everything runs in the browser.
 
+**[Live App](https://catan.fromlapampa.com/)** | **[Algorithm Docs](./docs/algorithms/)**
+
 ## Features
 
 - **Balanced map generation** using simulated annealing
