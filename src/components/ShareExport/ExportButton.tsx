@@ -65,26 +65,45 @@ export function ExportButton({ svgRef }: Props) {
       canvas.toBlob(blob => {
         if (!blob) return;
 
-        const file = new File([blob], 'catan-map.png', { type: 'image/png' });
-
-        // Use Web Share API on mobile if available (iOS Safari, etc.)
-        if (navigator.canShare?.({ files: [file] })) {
-          navigator.share({ files: [file] }).catch(() => {});
-        } else {
-          // Fallback: download via anchor
-          const url = URL.createObjectURL(blob);
-          const link = document.createElement('a');
-          link.download = 'catan-map.png';
-          link.href = url;
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-          URL.revokeObjectURL(url);
+        // Try Web Share API first (better mobile support)
+        if (navigator.share && navigator.canShare) {
+          const file = new File([blob], 'catan-map.png', { type: 'image/png' });
+          if (navigator.canShare({ files: [file] })) {
+            navigator.share({ files: [file] }).catch(err => {
+              // Share failed or cancelled, fallback to download
+              console.warn('Share failed, using download fallback', err);
+              downloadBlob(blob);
+            });
+            return;
+          }
         }
+
+        // Fallback: download via anchor
+        downloadBlob(blob);
       }, 'image/png');
     };
     img.src = dataUrl;
   };
+
+  function downloadBlob(blob: Blob) {
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.download = 'catan-map.png';
+    link.href = url;
+
+    // Mobile-friendly: add to DOM and trigger
+    link.style.display = 'none';
+    document.body.appendChild(link);
+
+    // iOS Safari needs a slight delay
+    setTimeout(() => {
+      link.click();
+      setTimeout(() => {
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      }, 100);
+    }, 100);
+  }
 
   return (
     <button onClick={handleExport} className={styles.button}>
