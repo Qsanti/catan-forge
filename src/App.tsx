@@ -75,6 +75,9 @@ function App() {
           <div className={`${controlStyles.controls} ${styles.controlsRow}`}>
             <BalanceSelector value={config.balanceMode} onChange={setBalanceMode} />
             <PlayerSelector value={config.numPlayers} onChange={setNumPlayers} />
+            <button className={`${controlStyles.generateButton} ${styles.generateMain}`} onClick={generate}>
+              {t('generateButton')}
+            </button>
           </div>
 
           <div className={`${controlStyles.controls} ${styles.actionsRow}`}>
@@ -89,9 +92,6 @@ function App() {
             <div className={styles.actionButtons}>
               <ShareButton mapUrl={shareUrl} />
               <ExportButton svgRef={svgRef} />
-              <button className={controlStyles.generateButton} onClick={generate}>
-                {t('generateButton')}
-              </button>
             </div>
           </div>
         </>
