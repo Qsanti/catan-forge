@@ -1,4 +1,5 @@
 import type { Board, Resource, Vertex } from '../types/board.types';
+import { PLACEMENT_WEIGHTS } from '../utils/constants';
 
 export function scoreVertex(
   board: Board,
@@ -19,11 +20,11 @@ export function scoreVertex(
     resourceTypes.add(hex.resource);
   }
 
-  // Diversity bonus: +10 per resource type not already owned
+  // Diversity bonus per resource type not already owned
   let diversityBonus = 0;
   for (const r of resourceTypes) {
     if (!playerResources.includes(r)) {
-      diversityBonus += 10;
+      diversityBonus += PLACEMENT_WEIGHTS.diversityBonus;
     }
   }
 
@@ -36,7 +37,7 @@ export function scoreVertex(
     if (!counts.has(r)) counts.set(r, 0);
   }
   const minCount = counts.size > 0 ? Math.min(...counts.values()) : 0;
-  const coverageBonus = 5 * minCount;
+  const coverageBonus = PLACEMENT_WEIGHTS.coverageBonusMultiplier * minCount;
 
   return pipTotal + diversityBonus + coverageBonus;
 }

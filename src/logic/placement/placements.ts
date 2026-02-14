@@ -1,6 +1,7 @@
 import type { Board, Resource, Vertex } from '../types/board.types';
 import type { Placement } from '../types/game.types';
 import { scoreVertex } from './vertexScorer';
+import { PLACEMENT_WEIGHTS } from '../utils/constants';
 
 function getResourcesForVertex(board: Board, vertex: Vertex): Resource[] {
   return vertex.adjacentHexIndices
@@ -43,7 +44,7 @@ function pickRoad(board: Board, vertex: Vertex, playerResources: Resource[]): st
       const hex = board.hexes[hexIdx];
       if (hex.resource === 'desert') continue;
       if (!playerResources.includes(hex.resource)) {
-        score += hex.pips + 5;
+        score += hex.pips + PLACEMENT_WEIGHTS.roadDiversityBonus;
       } else {
         score += hex.pips;
       }

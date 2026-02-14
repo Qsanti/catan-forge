@@ -34,6 +34,16 @@ export const RESOURCE_COLORS: Record<Resource, string> = {
   desert: '#D7CCC8',
 };
 
+/** Placement scoring weights */
+export const PLACEMENT_WEIGHTS = {
+  /** Bonus per new resource type the player doesn't own yet */
+  diversityBonus: 10,
+  /** Multiplier for the player's minimum resource count */
+  coverageBonusMultiplier: 5,
+  /** Bonus when a road leads toward a new resource type */
+  roadDiversityBonus: 5,
+};
+
 /** SVG pattern ids per resource (for color-blind accessibility) */
 export const RESOURCE_PATTERNS: Record<Resource, string> = {
   wood: 'pattern-vertical',
