@@ -1,4 +1,5 @@
 import type { RefObject } from 'react';
+import { useState } from 'react';
 import { useI18n } from '../../i18n/useI18n';
 import styles from '../Controls/Controls.module.css';
 
@@ -28,12 +29,23 @@ function resolveCSS(svgEl: SVGSVGElement, svgString: string): string {
 
 export function ExportButton({ svgRef }: Props) {
   const { t } = useI18n();
+  const [error, setError] = useState<string | null>(null);
 
   const handleExport = () => {
     const svg = svgRef.current;
     if (!svg) return;
 
+    // Clear any previous errors
+    setError(null);
+
+    // Add viewBox null check
     const viewBox = svg.viewBox.baseVal;
+    if (!viewBox) {
+      setError('SVG viewBox not found');
+      console.error('SVG viewBox not found');
+      return;
+    }
+
     const vbWidth = viewBox.width;
     const vbHeight = viewBox.height;
     const scale = 2;
@@ -50,38 +62,73 @@ export function ExportButton({ svgRef }: Props) {
     );
 
     // Use data URL instead of blob URL for better mobile compatibility
-    const svgBase64 = btoa(unescape(encodeURIComponent(svgString)));
+    // Replace deprecated unescape() with modern approach
+    const utf8Bytes = new TextEncoder().encode(svgString);
+    let binaryString = '';
+    for (let i = 0; i < utf8Bytes.length; i++) {
+      binaryString += String.fromCharCode(utf8Bytes[i]);
+    }
+    const svgBase64 = btoa(binaryString);
     const dataUrl = `data:image/svg+xml;base64,${svgBase64}`;
 
     const img = new Image();
+
+    // Add img.onerror handler
+    img.onerror = () => {
+      const errorMsg = 'Failed to load SVG image for export';
+      setError(errorMsg);
+      console.error(errorMsg);
+    };
+
     img.onload = () => {
-      const canvas = document.createElement('canvas');
-      canvas.width = vbWidth * scale;
-      canvas.height = vbHeight * scale;
-      const ctx = canvas.getContext('2d')!;
-      ctx.scale(scale, scale);
-      ctx.drawImage(img, 0, 0, vbWidth, vbHeight);
+      try {
+        const canvas = document.createElement('canvas');
+        canvas.width = vbWidth * scale;
+        canvas.height = vbHeight * scale;
 
-      canvas.toBlob(blob => {
-        if (!blob) return;
-
-        // Try Web Share API first (better mobile support)
-        if (navigator.share && navigator.canShare) {
-          const file = new File([blob], 'catan-map.png', { type: 'image/png' });
-          if (navigator.canShare({ files: [file] })) {
-            navigator.share({ files: [file] }).catch(err => {
-              // Share failed or cancelled, fallback to download
-              console.warn('Share failed, using download fallback', err);
-              downloadBlob(blob);
-            });
-            return;
-          }
+        // Add canvas context null check
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+          const errorMsg = 'Failed to get canvas 2D context';
+          setError(errorMsg);
+          console.error(errorMsg);
+          return;
         }
 
-        // Fallback: download via anchor
-        downloadBlob(blob);
-      }, 'image/png');
+        ctx.scale(scale, scale);
+        ctx.drawImage(img, 0, 0, vbWidth, vbHeight);
+
+        canvas.toBlob(blob => {
+          if (!blob) {
+            const errorMsg = 'Failed to create PNG blob';
+            setError(errorMsg);
+            console.error(errorMsg);
+            return;
+          }
+
+          // Try Web Share API first (better mobile support)
+          if (navigator.share && navigator.canShare) {
+            const file = new File([blob], 'catan-map.png', { type: 'image/png' });
+            if (navigator.canShare({ files: [file] })) {
+              navigator.share({ files: [file] }).catch(err => {
+                // Share failed or cancelled, fallback to download
+                console.warn('Share failed, using download fallback', err);
+                downloadBlob(blob);
+              });
+              return;
+            }
+          }
+
+          // Fallback: download via anchor
+          downloadBlob(blob);
+        }, 'image/png');
+      } catch (err) {
+        const errorMsg = `Error during canvas export: ${err instanceof Error ? err.message : String(err)}`;
+        setError(errorMsg);
+        console.error(errorMsg, err);
+      }
     };
+
     img.src = dataUrl;
   };
 
@@ -106,8 +153,15 @@ export function ExportButton({ svgRef }: Props) {
   }
 
   return (
-    <button onClick={handleExport} className={styles.button}>
-      {t('exportPng')}
-    </button>
+    <>
+      <button onClick={handleExport} className={styles.button}>
+        {t('exportPng')}
+      </button>
+      {error && (
+        <div style={{ color: 'red', fontSize: '0.85rem', marginTop: '0.25rem' }}>
+          {error}
+        </div>
+      )}
+    </>
   );
 }
