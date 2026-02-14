@@ -1,5 +1,8 @@
 # Catan Forge
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![Contributions Welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg)](https://github.com/Qsanti/catan-forge/issues)
+
 A free web app that generates balanced Catan maps with fair initial placement suggestions. No backend needed — everything runs in the browser.
 
 **[Live App](https://catan.fromlapampa.com/)** | **[Algorithm Docs](./docs/algorithms/)**
