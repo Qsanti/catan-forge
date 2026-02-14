@@ -1,7 +1,7 @@
 import type { Board, Resource, Vertex } from '../types/board.types';
 import type { Placement } from '../types/game.types';
 import { scoreVertex } from './vertexScorer';
-import { PLACEMENT_WEIGHTS } from '../utils/constants';
+import { PLACEMENT_WEIGHTS } from '../utils/algorithmConfig';
 
 function getResourcesForVertex(board: Board, vertex: Vertex): Resource[] {
   return vertex.adjacentHexIndices
@@ -28,12 +28,14 @@ function pickBestVertex(
   return best;
 }
 
-function pickRoad(board: Board, vertex: Vertex, playerResources: Resource[]): string {
+function pickRoad(board: Board, vertex: Vertex, playerResources: Resource[], takenEdges: Set<string>): string {
   // Pick edge leading toward the best adjacent hex the player doesn't have
-  let bestEdge = vertex.adjacentEdgeIds[0];
+  let bestEdge = '';
   let bestScore = -1;
 
   for (const edgeId of vertex.adjacentEdgeIds) {
+    if (takenEdges.has(edgeId)) continue;
+
     const edge = board.edges.find(e => e.id === edgeId)!;
     const otherVid = edge.vertexIds[0] === vertex.id ? edge.vertexIds[1] : edge.vertexIds[0];
     const otherVertex = board.vertices.find(v => v.id === otherVid);
@@ -54,6 +56,10 @@ function pickRoad(board: Board, vertex: Vertex, playerResources: Resource[]): st
       bestEdge = edgeId;
     }
   }
+
+  // Fallback: if all adjacent edges are taken, pick the first available
+  if (!bestEdge) bestEdge = vertex.adjacentEdgeIds[0];
+
   return bestEdge;
 }
 
@@ -73,6 +79,7 @@ export function calculatePlacements(board: Board, numPlayers: 3 | 4): Placement[
   const placements: Placement[] = [];
   const taken = new Set<string>();
   const blocked = new Set<string>();
+  const takenEdges = new Set<string>();
   const playerResources: Resource[][] = Array.from({ length: numPlayers }, () => []);
 
   const available = () => {
@@ -91,8 +98,9 @@ export function calculatePlacements(board: Board, numPlayers: 3 | 4): Placement[
     const resources = getResourcesForVertex(board, vertex);
     playerResources[p].push(...resources);
 
-    const roadId = pickRoad(board, vertex, playerResources[p]);
+    const roadId = pickRoad(board, vertex, playerResources[p], takenEdges);
     const road = edges.find(e => e.id === roadId)!;
+    takenEdges.add(roadId);
 
     blockVertices(vertex.id, vertices, taken, blocked);
     placements.push({ settlement: vertex, road, player: p + 1, round: 1 });
@@ -106,8 +114,9 @@ export function calculatePlacements(board: Board, numPlayers: 3 | 4): Placement[
     const resources = getResourcesForVertex(board, vertex);
     playerResources[p].push(...resources);
 
-    const roadId = pickRoad(board, vertex, playerResources[p]);
+    const roadId = pickRoad(board, vertex, playerResources[p], takenEdges);
     const road = edges.find(e => e.id === roadId)!;
+    takenEdges.add(roadId);
 
     blockVertices(vertex.id, vertices, taken, blocked);
     placements.push({ settlement: vertex, road, player: p + 1, round: 2 });

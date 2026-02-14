@@ -2,6 +2,7 @@ import type { Board } from '../types/board.types';
 import type { BalanceMode } from '../types/game.types';
 import { HEX_ADJACENCY } from '../board/adjacency';
 import { HIGH_NUMBERS } from '../utils/constants';
+import { ENERGY_WEIGHTS } from '../utils/algorithmConfig';
 
 export function countSameResourceAdjacencies(board: Board): number {
   let count = 0;
@@ -51,8 +52,8 @@ export function calculatePipVariance(board: Board): number {
 
 export function calculateEnergy(board: Board, _mode: BalanceMode): number {
   return (
-    countSameResourceAdjacencies(board) * 100 +
-    countHighNumberAdjacencies(board) * 150 +
-    calculatePipVariance(board) * 10
+    countSameResourceAdjacencies(board) * ENERGY_WEIGHTS.sameResourceAdjacency +
+    countHighNumberAdjacencies(board) * ENERGY_WEIGHTS.highNumberAdjacency +
+    calculatePipVariance(board) * ENERGY_WEIGHTS.pipVariance
   );
 }

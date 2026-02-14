@@ -1,5 +1,5 @@
 import type { Board, Resource, Vertex } from '../types/board.types';
-import { PLACEMENT_WEIGHTS } from '../utils/constants';
+import { PLACEMENT_WEIGHTS } from '../utils/algorithmConfig';
 
 export function scoreVertex(
   board: Board,

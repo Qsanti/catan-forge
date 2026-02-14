@@ -5,6 +5,7 @@ import { createBoard } from '../board/board';
 import { placeResources } from './resourcePlacer';
 import { placeNumbers } from './numberPlacer';
 import { calculateEnergy } from './scorer';
+import { ANNEALING } from '../utils/algorithmConfig';
 
 
 export function generateMap(config: MapConfig): Board {
@@ -21,13 +22,13 @@ export function generateMap(config: MapConfig): Board {
   let curNumbers = [...bestNumbers];
   let curEnergy = bestEnergy;
 
-  let temp = 1000;
-  const cooling = 0.95;
+  let temp = ANNEALING.initialTemperature;
+  const cooling = ANNEALING.coolingRate;
 
-  for (let iter = 0; iter < 300; iter++) {
+  for (let iter = 0; iter < ANNEALING.iterations; iter++) {
     const swapResources =
       config.balanceMode === 'both'
-        ? rng.next() < 0.5
+        ? rng.next() < ANNEALING.resourceSwapProbability
         : config.balanceMode === 'resources';
 
     const prevResources = [...curResources];
