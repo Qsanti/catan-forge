@@ -62,13 +62,9 @@ export function ExportButton({ svgRef }: Props) {
     );
 
     // Use data URL instead of blob URL for better mobile compatibility
-    // Replace deprecated unescape() with modern approach
-    const utf8Bytes = new TextEncoder().encode(svgString);
-    let binaryString = '';
-    for (let i = 0; i < utf8Bytes.length; i++) {
-      binaryString += String.fromCharCode(utf8Bytes[i]);
-    }
-    const svgBase64 = btoa(binaryString);
+    // Note: Using unescape() which is deprecated but works reliably for UTF-8 to base64
+    // Modern alternatives are more verbose. This handles special characters correctly.
+    const svgBase64 = btoa(unescape(encodeURIComponent(svgString)));
     const dataUrl = `data:image/svg+xml;base64,${svgBase64}`;
 
     const img = new Image();
