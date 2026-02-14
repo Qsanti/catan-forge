@@ -1,0 +1,87 @@
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow);
+}
+
+@media (min-width: 640px) {
+  .controls {
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+}
+
+.segmented {
+  display: inline-flex;
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+}
+
+.segmented label {
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+  color: var(--text-secondary);
+  background: var(--bg-secondary);
+  transition: background 0.15s, color 0.15s;
+  user-select: none;
+  border-right: 1px solid var(--border-color);
+}
+
+.segmented label:last-child {
+  border-right: none;
+}
+
+.segmented input {
+  display: none;
+}
+
+.segmented input:checked + span {
+  /* handled via parent */
+}
+
+.segmented label:has(input:checked) {
+  background: var(--text-primary);
+  color: var(--bg-primary);
+}
+
+.button {
+  padding: 0.6rem 1.25rem;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: #1565C0;
+  color: #ffffff;
+  transition: background 0.15s;
+}
+
+.button:hover {
+  background: #0D47A1;
+}
+
+.button:active {
+  transform: scale(0.98);
+}

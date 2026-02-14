@@ -1,0 +1,28 @@
+.boardContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 1rem;
+}
+
+.boardSvg {
+  width: 100%;
+  max-width: 600px;
+  height: auto;
+}
+
+@keyframes hexFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.hexGroup {
+  animation: hexFadeIn 0.4s ease-out both;
+}
