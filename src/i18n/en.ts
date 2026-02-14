@@ -1,0 +1,26 @@
+const en = {
+  appTitle: 'Catan Forge',
+  generateButton: 'Generate Map',
+  balanceLabel: 'Balance',
+  balanceResources: 'Resources',
+  balanceNumbers: 'Numbers',
+  balanceBoth: 'Both',
+  playersLabel: 'Players',
+  showPlacements: 'Show Placements',
+  shareCopied: 'Copied!',
+  exportPng: 'Export PNG',
+  darkMode: 'Dark Mode',
+  language: 'Language',
+  wood: 'Wood',
+  wheat: 'Wheat',
+  sheep: 'Sheep',
+  brick: 'Brick',
+  ore: 'Ore',
+  desert: 'Desert',
+  player1: 'Player 1',
+  player2: 'Player 2',
+  player3: 'Player 3',
+  player4: 'Player 4',
+} as const;
+
+export default en;
