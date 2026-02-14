@@ -43,6 +43,9 @@ const Board = forwardRef<SVGSVGElement, BoardProps>(({ board, children }, ref) =
             <line x1="0" y1="3" x2="6" y2="3" stroke="#000" strokeWidth="1" opacity="0.3" />
             <line x1="3" y1="0" x2="3" y2="6" stroke="#000" strokeWidth="1" opacity="0.3" />
           </pattern>
+          <filter id="tokenShadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feDropShadow dx="0" dy="1" stdDeviation="1.5" floodOpacity="0.2" />
+          </filter>
         </defs>
         {board.hexes.map((hex, i) => (
           <HexTile

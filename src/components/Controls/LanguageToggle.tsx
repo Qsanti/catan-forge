@@ -1,4 +1,5 @@
 import { useI18n } from '../../i18n/useI18n';
+import styles from './Controls.module.css';
 
 export function LanguageToggle() {
   const { locale, setLocale } = useI18n();
@@ -8,7 +9,7 @@ export function LanguageToggle() {
   };
 
   return (
-    <button onClick={toggle}>
+    <button onClick={toggle} className={styles.button}>
       {locale === 'en' ? 'ES' : 'EN'}
     </button>
   );

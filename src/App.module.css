@@ -1,0 +1,109 @@
+.container {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: var(--space-xl) var(--space-md);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-lg);
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.titleGroup {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-sm);
+}
+
+.title {
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+}
+
+.subtitle {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.headerActions {
+  display: flex;
+  gap: var(--space-sm);
+  align-items: center;
+}
+
+.themeToggle {
+  padding: 0.5rem 0.75rem;
+  background: var(--btn-secondary-bg);
+  color: var(--text-primary);
+  border: 1px solid var(--btn-secondary-border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: var(--font-size-base);
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.themeToggle:hover {
+  background: var(--btn-secondary-hover);
+  border-color: var(--accent);
+}
+
+.controlsRow {
+  margin-top: var(--space-lg);
+}
+
+.actionsRow {
+  margin-top: var(--space-sm);
+}
+
+.placementLabel {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  transition: color 0.2s;
+}
+
+.placementLabel:hover {
+  color: var(--text-primary);
+}
+
+.placementLabel input[type="checkbox"] {
+  accent-color: var(--accent);
+  width: 1rem;
+  height: 1rem;
+}
+
+.actionButtons {
+  display: flex;
+  gap: var(--space-sm);
+  margin-left: auto;
+}
+
+.footer {
+  margin-top: var(--space-xl);
+  text-align: center;
+  padding: var(--space-md) 0;
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+.footer a {
+  color: var(--accent);
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+
+.footer a:hover {
+  opacity: 0.8;
+}

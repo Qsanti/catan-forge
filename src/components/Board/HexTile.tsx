@@ -23,8 +23,8 @@ const HexTile: FC<HexTileProps> = ({ hex, cx, cy, size, animationDelay }) => {
       <polygon
         points={points}
         fill={fill}
-        stroke="#5D4037"
-        strokeWidth={2}
+        stroke="var(--hex-stroke)"
+        strokeWidth={2.5}
       />
       {hex.number !== null && (
         <NumberToken number={hex.number} cx={cx} cy={cy} size={size} />

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useI18n } from '../../i18n/useI18n';
+import styles from '../Controls/Controls.module.css';
 
 type Props = {
   mapUrl: string;
@@ -16,8 +17,8 @@ export function ShareButton({ mapUrl }: Props) {
   };
 
   return (
-    <button onClick={handleClick}>
-      {copied ? t('shareCopied') : '🔗 Share'}
+    <button onClick={handleClick} className={styles.button}>
+      {copied ? t('shareCopied') : 'Share'}
     </button>
   );
 }

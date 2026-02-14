@@ -3,7 +3,9 @@
   justify-content: center;
   align-items: center;
   width: 100%;
-  padding: 1rem;
+  padding: var(--space-md);
+  background: var(--board-sea);
+  border-radius: var(--radius-lg);
 }
 
 .boardSvg {

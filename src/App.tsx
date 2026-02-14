@@ -10,7 +10,8 @@ import PlayerSelector from './components/Controls/PlayerSelector';
 import { LanguageToggle } from './components/Controls/LanguageToggle';
 import { ShareButton } from './components/ShareExport/ShareButton';
 import { ExportButton } from './components/ShareExport/ExportButton';
-import styles from './components/Controls/Controls.module.css';
+import controlStyles from './components/Controls/Controls.module.css';
+import styles from './App.module.css';
 import './index.css';
 
 function getInitialTheme(): string {
@@ -36,16 +37,15 @@ function App() {
   const shareUrl = encodeMapToUrl(config);
 
   return (
-    <div style={{ maxWidth: 720, margin: '0 auto', padding: '2rem 1rem' }}>
-      <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '0.5rem' }}>
-        <h1 style={{ fontSize: '1.5rem', fontWeight: 700 }}>{t('appTitle')}</h1>
-        <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+    <div className={styles.container}>
+      <header className={styles.header}>
+        <div className={styles.titleGroup}>
+          <h1 className={styles.title}>{t('appTitle')}</h1>
+          <span className={styles.subtitle}>Map Generator</span>
+        </div>
+        <div className={styles.headerActions}>
           <LanguageToggle />
-          <button
-            onClick={toggleTheme}
-            className={styles.button}
-            style={{ background: 'var(--bg-secondary)', color: 'var(--text-primary)', border: '1px solid var(--border-color)' }}
-          >
+          <button onClick={toggleTheme} className={styles.themeToggle}>
             {theme === 'dark' ? '☀️' : '🌙'}
           </button>
         </div>
@@ -59,13 +59,13 @@ function App() {
         </Board>
       )}
 
-      <div className={styles.controls} style={{ marginTop: '1.5rem' }}>
+      <div className={`${controlStyles.controls} ${styles.controlsRow}`}>
         <BalanceSelector value={config.balanceMode} onChange={setBalanceMode} />
         <PlayerSelector value={config.numPlayers} onChange={setNumPlayers} />
       </div>
 
-      <div className={styles.controls} style={{ marginTop: '0.75rem' }}>
-        <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '0.9rem' }}>
+      <div className={`${controlStyles.controls} ${styles.actionsRow}`}>
+        <label className={styles.placementLabel}>
           <input
             type="checkbox"
             checked={showPlacements}
@@ -73,14 +73,18 @@ function App() {
           />
           {t('showPlacements')}
         </label>
-        <div style={{ display: 'flex', gap: '0.5rem', marginLeft: 'auto' }}>
+        <div className={styles.actionButtons}>
           <ShareButton mapUrl={shareUrl} />
           <ExportButton svgRef={svgRef} />
-          <button className={styles.button} onClick={generate}>
+          <button className={controlStyles.generateButton} onClick={generate}>
             {t('generateButton')}
           </button>
         </div>
       </div>
+
+      <footer className={styles.footer}>
+        Catan Forge — Free & Open Source
+      </footer>
     </div>
   );
 }

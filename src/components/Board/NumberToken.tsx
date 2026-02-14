@@ -15,7 +15,15 @@ const NumberToken: FC<NumberTokenProps> = ({ number, cx, cy, size }) => {
 
   return (
     <g>
-      <circle cx={cx} cy={cy} r={radius} fill="#FFF8E1" stroke="#5D4037" strokeWidth={1.5} />
+      <circle
+        cx={cx}
+        cy={cy}
+        r={radius}
+        fill="var(--token-bg)"
+        stroke="var(--token-stroke)"
+        strokeWidth={1.5}
+        filter="url(#tokenShadow)"
+      />
       <text
         x={cx}
         y={cy + 1}
@@ -23,7 +31,8 @@ const NumberToken: FC<NumberTokenProps> = ({ number, cx, cy, size }) => {
         dominantBaseline="central"
         fontSize={size * 0.32}
         fontWeight={isHigh ? 700 : 500}
-        fill={isHigh ? '#D32F2F' : '#333333'}
+        fontFamily="var(--font-family)"
+        fill={isHigh ? 'var(--token-high)' : 'var(--token-text)'}
       >
         {number}
       </text>
@@ -38,7 +47,7 @@ const NumberToken: FC<NumberTokenProps> = ({ number, cx, cy, size }) => {
               cx={dotX}
               cy={dotY}
               r={dotRadius}
-              fill={isHigh ? '#D32F2F' : '#333333'}
+              fill={isHigh ? 'var(--token-high)' : 'var(--token-text)'}
             />
           );
         })}
