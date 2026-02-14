@@ -6,7 +6,7 @@ const es = {
   balanceNumbers: 'Números',
   balanceBoth: 'Ambos',
   playersLabel: 'Jugadores',
-  showPlacements: 'Mostrar Colocaciones',
+  showPlacements: 'Mostrar Colocaciones (Beta)',
   shareCopied: '¡Copiado!',
   exportPng: 'Exportar PNG',
   darkMode: 'Modo Oscuro',
