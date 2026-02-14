@@ -7,7 +7,7 @@
 
 export const ANNEALING = {
   /** Number of iterations (swap attempts) */
-  iterations: 300,
+  iterations: 500,
   /** Starting temperature — higher = more random exploration early on */
   initialTemperature: 1000,
   /** Cooling rate per iteration (temp *= coolingRate) */
