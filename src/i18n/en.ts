@@ -21,6 +21,8 @@ const en = {
   player2: 'Player 2',
   player3: 'Player 3',
   player4: 'Player 4',
+  sharedMap: 'Shared Map',
+  generateOwn: 'Generate Your Own Map',
 } as const;
 
 export default en;

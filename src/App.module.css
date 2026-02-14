@@ -90,20 +90,41 @@
   margin-left: auto;
 }
 
+.sharedActions {
+  margin-top: var(--space-lg);
+  display: flex;
+  justify-content: center;
+}
+
 .footer {
   margin-top: var(--space-xl);
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--space-xs);
   padding: var(--space-md) 0;
   font-size: var(--font-size-sm);
   color: var(--text-secondary);
 }
 
-.footer a {
-  color: var(--accent);
-  text-decoration: none;
-  transition: opacity 0.2s;
+.footerDot {
+  color: var(--text-secondary);
 }
 
-.footer a:hover {
-  opacity: 0.8;
+.footerLink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.footerLink:hover {
+  color: var(--text-primary);
+}
+
+.ghIcon {
+  width: 1em;
+  height: 1em;
 }

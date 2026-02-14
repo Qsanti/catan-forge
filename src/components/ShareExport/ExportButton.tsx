@@ -10,7 +10,6 @@ function resolveCSS(svgEl: SVGSVGElement, svgString: string): string {
   const computed = getComputedStyle(svgEl);
   const replacements: Record<string, string> = {};
 
-  // Find all var(--...) references in the SVG string
   const varRegex = /var\(--([^)]+)\)/g;
   let match;
   while ((match = varRegex.exec(svgString)) !== null) {
@@ -42,17 +41,17 @@ export function ExportButton({ svgRef }: Props) {
     const serializer = new XMLSerializer();
     let svgString = serializer.serializeToString(svg);
 
-    // Resolve CSS custom properties so they work outside the DOM
     svgString = resolveCSS(svg, svgString);
 
-    // Ensure the SVG has explicit width/height matching the viewBox
+    // Ensure explicit width/height on SVG element
     svgString = svgString.replace(
       /^(<svg[^>]*?)(\swidth="[^"]*")?(\sheight="[^"]*")?/,
       `$1 width="${vbWidth}" height="${vbHeight}"`
     );
 
-    const blob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
+    // Use data URL instead of blob URL for better mobile compatibility
+    const svgBase64 = btoa(unescape(encodeURIComponent(svgString)));
+    const dataUrl = `data:image/svg+xml;base64,${svgBase64}`;
 
     const img = new Image();
     img.onload = () => {
@@ -62,14 +61,29 @@ export function ExportButton({ svgRef }: Props) {
       const ctx = canvas.getContext('2d')!;
       ctx.scale(scale, scale);
       ctx.drawImage(img, 0, 0, vbWidth, vbHeight);
-      URL.revokeObjectURL(url);
 
-      const link = document.createElement('a');
-      link.download = 'catan-map.png';
-      link.href = canvas.toDataURL('image/png');
-      link.click();
+      canvas.toBlob(blob => {
+        if (!blob) return;
+
+        const file = new File([blob], 'catan-map.png', { type: 'image/png' });
+
+        // Use Web Share API on mobile if available (iOS Safari, etc.)
+        if (navigator.canShare?.({ files: [file] })) {
+          navigator.share({ files: [file] }).catch(() => {});
+        } else {
+          // Fallback: download via anchor
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.download = 'catan-map.png';
+          link.href = url;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          URL.revokeObjectURL(url);
+        }
+      }, 'image/png');
     };
-    img.src = url;
+    img.src = dataUrl;
   };
 
   return (

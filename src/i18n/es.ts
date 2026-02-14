@@ -21,6 +21,8 @@ const es = {
   player2: 'Jugador 2',
   player3: 'Jugador 3',
   player4: 'Jugador 4',
+  sharedMap: 'Mapa Compartido',
+  generateOwn: 'Genera Tu Propio Mapa',
 } as const;
 
 export type TranslationKeys = keyof typeof es;
