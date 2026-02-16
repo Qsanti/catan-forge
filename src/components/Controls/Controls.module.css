@@ -15,6 +15,10 @@
     align-items: center;
     flex-wrap: wrap;
   }
+
+  .group {
+    flex: 1;
+  }
 }
 
 .group {
@@ -33,6 +37,7 @@
 
 .segmented {
   display: inline-flex;
+  align-self: flex-start;
   border-radius: var(--radius-sm);
   overflow: hidden;
   border: 1px solid var(--border-color);
