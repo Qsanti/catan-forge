@@ -1,4 +1,5 @@
 import type { FC } from 'react';
+import { useI18n } from '../../i18n/useI18n';
 import styles from './Controls.module.css';
 
 type PlayerSelectorProps = {
@@ -7,9 +8,11 @@ type PlayerSelectorProps = {
 };
 
 const PlayerSelector: FC<PlayerSelectorProps> = ({ value, onChange }) => {
+  const { t } = useI18n();
+
   return (
     <div className={styles.group}>
-      <span className={styles.label}>Players</span>
+      <span className={styles.label}>{t('playersLabel')}</span>
       <div className={styles.segmented}>
         <label>
           <input
@@ -19,7 +22,7 @@ const PlayerSelector: FC<PlayerSelectorProps> = ({ value, onChange }) => {
             checked={value === 3}
             onChange={() => onChange(3)}
           />
-          <span>3 Players</span>
+          <span>{t('nPlayers').replace('{n}', '3')}</span>
         </label>
         <label>
           <input
@@ -29,7 +32,7 @@ const PlayerSelector: FC<PlayerSelectorProps> = ({ value, onChange }) => {
             checked={value === 4}
             onChange={() => onChange(4)}
           />
-          <span>4 Players</span>
+          <span>{t('nPlayers').replace('{n}', '4')}</span>
         </label>
       </div>
     </div>

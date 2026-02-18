@@ -18,7 +18,7 @@ export function ShareButton({ mapUrl }: Props) {
 
   return (
     <button onClick={handleClick} className={styles.button}>
-      {copied ? t('shareCopied') : 'Share'}
+      {copied ? t('shareCopied') : t('shareButton')}
     </button>
   );
 }
