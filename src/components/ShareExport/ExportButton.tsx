@@ -7,24 +7,38 @@ type Props = {
   svgRef: RefObject<SVGSVGElement | null>;
 };
 
-function resolveCSS(svgEl: SVGSVGElement, svgString: string): string {
+const SVG_CSS_VARS = [
+  '--hex-stroke',
+  '--token-bg',
+  '--token-stroke',
+  '--token-text',
+  '--token-high',
+] as const;
+
+const SVG_CSS_VAR_DEFAULTS: Record<(typeof SVG_CSS_VARS)[number], string> = {
+  '--hex-stroke': '#000000',
+  '--token-bg': '#fffbeb',
+  '--token-stroke': '#4a3728',
+  '--token-text': '#2d2d2d',
+  '--token-high': '#dc2626',
+};
+
+function injectSvgStyles(svgEl: SVGSVGElement, svgString: string): string {
   const computed = getComputedStyle(svgEl);
-  const replacements: Record<string, string> = {};
 
-  const varRegex = /var\(--([^)]+)\)/g;
-  let match;
-  while ((match = varRegex.exec(svgString)) !== null) {
-    const varName = `--${match[1]}`;
-    if (!replacements[match[0]]) {
-      replacements[match[0]] = computed.getPropertyValue(varName).trim() || match[0];
-    }
-  }
+  // Build a <style> block with resolved CSS variables so the SVG is self-contained
+  const varDeclarations = SVG_CSS_VARS.map(name => {
+    const value = computed.getPropertyValue(name).trim() || SVG_CSS_VAR_DEFAULTS[name];
+    return `${name}:${value}`;
+  }).join(';');
 
-  let resolved = svgString;
-  for (const [token, value] of Object.entries(replacements)) {
-    resolved = resolved.replaceAll(token, value);
+  const styleBlock = `<style>:root{${varDeclarations}}*{animation:none!important}</style>`;
+
+  // Inject before closing </defs>, or right after the opening <svg...> tag if no defs
+  if (svgString.includes('</defs>')) {
+    return svgString.replace('</defs>', `${styleBlock}</defs>`);
   }
-  return resolved;
+  return svgString.replace(/(<svg[^>]*>)/, `$1${styleBlock}`);
 }
 
 export function ExportButton({ svgRef }: Props) {
@@ -53,7 +67,13 @@ export function ExportButton({ svgRef }: Props) {
     const serializer = new XMLSerializer();
     let svgString = serializer.serializeToString(svg);
 
-    svgString = resolveCSS(svg, svgString);
+    // Ensure xmlns is present (required for standalone SVG image)
+    if (!svgString.includes('xmlns=')) {
+      svgString = svgString.replace('<svg', '<svg xmlns="http://www.w3.org/2000/svg"');
+    }
+
+    // Inject CSS variables as an inline <style> block so the SVG is self-contained
+    svgString = injectSvgStyles(svg, svgString);
 
     // Ensure explicit width/height on SVG element
     svgString = svgString.replace(
@@ -61,21 +81,20 @@ export function ExportButton({ svgRef }: Props) {
       `$1 width="${vbWidth}" height="${vbHeight}"`
     );
 
-    // Use a Blob URL to avoid encoding issues with deprecated unescape()/btoa()
-    const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
-    const svgUrl = URL.createObjectURL(svgBlob);
+    // Use encodeURIComponent data URL:
+    // - No deprecated unescape()/btoa()
+    // - No blob URL (avoids potential CSP/security restrictions)
+    const dataUrl = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svgString)}`;
 
     const img = new Image();
 
     img.onerror = () => {
-      URL.revokeObjectURL(svgUrl);
       const errorMsg = 'Failed to load SVG image for export';
       setError(errorMsg);
-      console.error(errorMsg);
+      console.error(errorMsg, { svgLength: svgString.length });
     };
 
     img.onload = () => {
-      URL.revokeObjectURL(svgUrl);
       try {
         const canvas = document.createElement('canvas');
         canvas.width = vbWidth * scale;
@@ -124,7 +143,7 @@ export function ExportButton({ svgRef }: Props) {
       }
     };
 
-    img.src = svgUrl;
+    img.src = dataUrl;
   };
 
   function downloadBlob(blob: Blob) {
