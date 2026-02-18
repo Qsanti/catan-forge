@@ -61,22 +61,21 @@ export function ExportButton({ svgRef }: Props) {
       `$1 width="${vbWidth}" height="${vbHeight}"`
     );
 
-    // Use data URL instead of blob URL for better mobile compatibility
-    // Note: Using unescape() which is deprecated but works reliably for UTF-8 to base64
-    // Modern alternatives are more verbose. This handles special characters correctly.
-    const svgBase64 = btoa(unescape(encodeURIComponent(svgString)));
-    const dataUrl = `data:image/svg+xml;base64,${svgBase64}`;
+    // Use a Blob URL to avoid encoding issues with deprecated unescape()/btoa()
+    const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+    const svgUrl = URL.createObjectURL(svgBlob);
 
     const img = new Image();
 
-    // Add img.onerror handler
     img.onerror = () => {
+      URL.revokeObjectURL(svgUrl);
       const errorMsg = 'Failed to load SVG image for export';
       setError(errorMsg);
       console.error(errorMsg);
     };
 
     img.onload = () => {
+      URL.revokeObjectURL(svgUrl);
       try {
         const canvas = document.createElement('canvas');
         canvas.width = vbWidth * scale;
@@ -125,7 +124,7 @@ export function ExportButton({ svgRef }: Props) {
       }
     };
 
-    img.src = dataUrl;
+    img.src = svgUrl;
   };
 
   function downloadBlob(blob: Blob) {
